@@ -15,15 +15,35 @@ public class TipoContacto implements Serializable{
 	
 	public TipoContacto(int idTipoContacto, String tipoContacto) {
 		super();
-		this.idTipoContacto = idTipoContacto;
-		TipoContacto = tipoContacto;
+		this.setIdTipoContacto(idTipoContacto);
+		setTipoContacto(tipoContacto);
 	}
 
 
 	@Override
 	public String toString() {
-		return "TipoContacto [idTipoContacto=" + idTipoContacto
-				+ ", TipoContacto=" + TipoContacto + "]";
+		return "TipoContacto [idTipoContacto=" + getIdTipoContacto()
+				+ ", TipoContacto=" + getTipoContacto() + "]";
+	}
+
+
+	public int getIdTipoContacto() {
+		return idTipoContacto;
+	}
+
+
+	public void setIdTipoContacto(int idTipoContacto) {
+		this.idTipoContacto = idTipoContacto;
+	}
+
+
+	public String getTipoContacto() {
+		return TipoContacto;
+	}
+
+
+	public void setTipoContacto(String tipoContacto) {
+		TipoContacto = tipoContacto;
 	}
 	
 	
