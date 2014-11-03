@@ -9,6 +9,17 @@ package ubu.lsi.dms.agenda.persistencia;
  */
 public class FabricaBin implements FabricaPersistencia {
 
+	private static FabricaBin instance;
+	
+	private FabricaBin() {
+	}
+
+	public static FabricaBin getInstance() {
+		if (instance == null)
+			instance = new FabricaBin();
+		return instance;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -18,8 +29,7 @@ public class FabricaBin implements FabricaPersistencia {
 	 */
 	@Override
 	public FachadaPersistente crearFachadaPersistente() {
-		// TODO Auto-generated method stub
-		return null;
+		return FachadaBin.getInstance();
 	}
 
 }
