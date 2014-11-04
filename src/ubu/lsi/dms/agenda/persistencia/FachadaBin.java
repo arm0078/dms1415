@@ -67,8 +67,14 @@ public class FachadaBin implements FachadaPersistente {
 
 	@Override
 	public void insertarLlamada(Llamada llamada) {
-		// TODO Auto-generated method stub
-
+		llamadas.add(llamada);
+		try (ObjectOutputStream out = new ObjectOutputStream(
+				new FileOutputStream("res\\llamadas.dat"))) {
+			out.writeObject(llamadas);
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -86,12 +92,10 @@ public class FachadaBin implements FachadaPersistente {
 
 	@Override
 	public void insertarContacto(Contacto contacto) {
-		if (isEmptyFile("res\\contactos.dat")) {
-			Collection<Contacto> contacto
-		}
+		contactos.add(contacto);
 		try (ObjectOutputStream out = new ObjectOutputStream(
 				new FileOutputStream("res\\contactos.dat"))) {
-			out.writeObject();
+			out.writeObject(contactos);
 			out.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -102,19 +106,19 @@ public class FachadaBin implements FachadaPersistente {
 	@Override
 	public void actualizarContacto(Contacto contacto) {
 		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public Collection<Contacto> consultarContactos() {
-		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
 	@Override
 	public void insertarTipoContacto(TipoContacto tipoContacto) {
-		// TODO Auto-generated method stub
-
+		tipos.add(tipoContacto);
+		try (ObjectOutputStream out = new ObjectOutputStream(
+				new FileOutputStream("res\\tipos.dat"))) {
+			out.writeObject(tipos);
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -132,16 +136,20 @@ public class FachadaBin implements FachadaPersistente {
 	public Collection<Llamada> consultarLlamadas(Contacto contacto) {
 		Collection<Llamada> llamadasContacto = new ArrayList<>();
 		for (Llamada llamada : llamadas){
-			if(llamada.getIdContacto() == contacto.getIdContacto())
+			if(llamada.getContacto().getIdContacto() == contacto.getIdContacto())
 				llamadasContacto.add(llamada);
 		}
 		return llamadasContacto;
 	}
 
 	@Override
-	public Collection<Contacto> consultarContactos(String apellido) {
-		// TODO Auto-generated method stub
-		return null;
+	public Collection<Contacto> consultarContactos(String apellidos) {
+		Collection<Contacto> contactosApellido = new ArrayList<>();
+		for (Contacto contacto : contactos){
+			if(contacto.getApellidos() == apellidos)
+				contactosApellido .add(contacto);
+		}
+		return contactosApellido ;
 	}
 
 }
