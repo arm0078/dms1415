@@ -11,6 +11,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 import ubu.lsi.dms.agenda.modelo.Contacto;
 import ubu.lsi.dms.agenda.modelo.Llamada;
@@ -30,7 +31,7 @@ public class FachadaBin implements FachadaPersistente {
 
 	@SuppressWarnings("unchecked")
 	private FachadaBin() {
-		
+
 		// Cargar objetos persistentes
 		try (ObjectInputStream inContactos = new ObjectInputStream(
 				new FileInputStream("res\\contactos.dat"));
@@ -46,15 +47,13 @@ public class FachadaBin implements FachadaPersistente {
 				llamadas = (Collection<Llamada>) inLlamadas.readObject();
 			else
 				llamadas = new ArrayList<>();
-			if (!isEmptyFile("res\\tipos.dat")) 
+			if (!isEmptyFile("res\\tipos.dat"))
 				tipos = (Collection<TipoContacto>) inTipos.readObject();
 			else
 				tipos = new ArrayList<>();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -79,8 +78,22 @@ public class FachadaBin implements FachadaPersistente {
 
 	@Override
 	public void actualizarLlamada(Llamada llamada) {
-		// TODO Auto-generated method stub
-
+		Iterator<Llamada> iterator = llamadas.iterator();
+		while (iterator.hasNext()) {
+			Llamada llam = iterator.next();
+			if (llam.getIdLlamada() == llamada.getIdLlamada()) {
+				iterator.remove();
+				break;
+			}
+		}
+		llamadas.add(llamada);
+		try (ObjectOutputStream out = new ObjectOutputStream(
+				new FileOutputStream("res\\llamadas.dat"))) {
+			out.writeObject(llamadas);
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private boolean isEmptyFile(String nameFile) {
@@ -105,8 +118,22 @@ public class FachadaBin implements FachadaPersistente {
 
 	@Override
 	public void actualizarContacto(Contacto contacto) {
-		// TODO Auto-generated method stub
-		
+		Iterator<Contacto> iterator = contactos.iterator();
+		while (iterator.hasNext()) {
+			Contacto c = iterator.next();
+			if (contacto.getIdContacto() == c.getIdContacto()) {
+				iterator.remove();
+				break;
+			}
+		}
+		contactos.add(contacto);
+		try (ObjectOutputStream out = new ObjectOutputStream(
+				new FileOutputStream("res\\contactos.dat"))) {
+			out.writeObject(contactos);
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -123,8 +150,22 @@ public class FachadaBin implements FachadaPersistente {
 
 	@Override
 	public void actualizarTipoContacto(TipoContacto tipoContacto) {
-		// TODO Auto-generated method stub
-
+		Iterator<TipoContacto> iterator = tipos.iterator();
+		while (iterator.hasNext()) {
+			TipoContacto tipo = iterator.next();
+			if (tipo.getIdTipoContacto() == tipoContacto.getIdTipoContacto()) {
+				iterator.remove();
+				break;
+			}
+		}
+		tipos.add(tipoContacto);
+		try (ObjectOutputStream out = new ObjectOutputStream(
+				new FileOutputStream("res\\tipos.dat"))) {
+			out.writeObject(tipos);
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -135,8 +176,9 @@ public class FachadaBin implements FachadaPersistente {
 	@Override
 	public Collection<Llamada> consultarLlamadas(Contacto contacto) {
 		Collection<Llamada> llamadasContacto = new ArrayList<>();
-		for (Llamada llamada : llamadas){
-			if(llamada.getContacto().getIdContacto() == contacto.getIdContacto())
+		for (Llamada llamada : llamadas) {
+			if (llamada.getContacto().getIdContacto() == contacto
+					.getIdContacto())
 				llamadasContacto.add(llamada);
 		}
 		return llamadasContacto;
@@ -145,11 +187,11 @@ public class FachadaBin implements FachadaPersistente {
 	@Override
 	public Collection<Contacto> consultarContactos(String apellidos) {
 		Collection<Contacto> contactosApellido = new ArrayList<>();
-		for (Contacto contacto : contactos){
-			if(contacto.getApellidos() == apellidos)
-				contactosApellido .add(contacto);
+		for (Contacto contacto : contactos) {
+			if (contacto.getApellidos() == apellidos)
+				contactosApellido.add(contacto);
 		}
-		return contactosApellido ;
+		return contactosApellido;
 	}
 
 }
