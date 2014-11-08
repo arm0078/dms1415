@@ -59,6 +59,9 @@ public class Contacto implements Serializable {
 		this.tipoContacto = tipoContacto;
 	}
 
+	public Contacto() {
+	}
+
 	@Override
 	public String toString() {
 		return "Contacto [idContacto=" + getIdContacto() + ", nombre=" + nombre

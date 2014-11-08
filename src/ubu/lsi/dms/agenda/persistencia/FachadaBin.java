@@ -1,5 +1,5 @@
 /**
- * 
+ * @author Álvaro Ruiz
  */
 package ubu.lsi.dms.agenda.persistencia;
 
@@ -31,26 +31,33 @@ public class FachadaBin implements FachadaPersistente {
 
 	@SuppressWarnings("unchecked")
 	private FachadaBin() {
-
 		// Cargar objetos persistentes
-		try (ObjectInputStream inContactos = new ObjectInputStream(
-				new FileInputStream("res\\contactos.dat"));
-				ObjectInputStream inLlamadas = new ObjectInputStream(
-						new FileInputStream("res\\llamadas.dat"));
-				ObjectInputStream inTipos = new ObjectInputStream(
-						new FileInputStream("res\\tipos.dat"))) {
-			if (!isEmptyFile("res\\contactos.dat"))
+		ObjectInputStream inContactos = null;
+		ObjectInputStream inLlamadas = null;
+		ObjectInputStream inTipos = null;
+
+		try {
+			if (!isEmptyFile("res\\contactos.dat")) {
+				inContactos = new ObjectInputStream(new FileInputStream(
+						"res\\contactos.dat"));
 				contactos = (Collection<Contacto>) inContactos.readObject();
-			else
+			} else {
 				contactos = new ArrayList<>();
-			if (!isEmptyFile("res\\llamadas.dat"))
+			}
+			if (!isEmptyFile("res\\llamadas.dat")) {
+				inLlamadas = new ObjectInputStream(new FileInputStream(
+						"res\\llamadas.dat"));
 				llamadas = (Collection<Llamada>) inLlamadas.readObject();
-			else
+			} else {
 				llamadas = new ArrayList<>();
-			if (!isEmptyFile("res\\tipos.dat"))
+			}
+			if (!isEmptyFile("res\\tipos.dat")) {
+				inTipos = new ObjectInputStream(new FileInputStream(
+						"res\\tipos.dat"));
 				tipos = (Collection<TipoContacto>) inTipos.readObject();
-			else
+			} else {
 				tipos = new ArrayList<>();
+			}
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -188,7 +195,7 @@ public class FachadaBin implements FachadaPersistente {
 	public Collection<Contacto> consultarContactos(String apellidos) {
 		Collection<Contacto> contactosApellido = new ArrayList<>();
 		for (Contacto contacto : contactos) {
-			if (contacto.getApellidos() == apellidos)
+			if (contacto.getApellidos().equals(apellidos))
 				contactosApellido.add(contacto);
 		}
 		return contactosApellido;

@@ -17,6 +17,9 @@ public class Llamada implements Serializable {
 	private String asunto;
 	private String notas;
 
+	public Llamada(){	
+	}
+	
 	public Llamada(int idLlamada, Contacto contacto, String fechaLlamada,
 			String asunto, String notas) {
 		super();
