@@ -4,11 +4,12 @@ import java.io.Serializable;
 
 /**
  * Clase de entidad con la información de Contactos
+ * 
  * @author Carlos López
  *
  */
 @SuppressWarnings("serial")
-public class Contacto implements Serializable{
+public class Contacto implements Serializable {
 	private int idContacto;
 	private String nombre;
 	private String nomCorreoElectronico;
@@ -27,9 +28,9 @@ public class Contacto implements Serializable{
 	private String extensionTrabajo;
 	private String telefonoMovil;
 	private String numFax;
-	
+
 	private TipoContacto tipoContacto;
-	
+
 	public Contacto(int idContacto, String nombre, String apellidos,
 			String estimado, String direccion, String ciudad, String prov,
 			String codPostal, String region, String pais,
@@ -223,8 +224,50 @@ public class Contacto implements Serializable{
 	public void setTipoContacto(TipoContacto tipoContacto) {
 		this.tipoContacto = tipoContacto;
 	}
-	
-	
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this) {
+			return true;
+		}
+		if (obj == null || obj.getClass() != this.getClass()) {
+			return false;
+		}
+
+		Contacto c = (Contacto) obj;
+		return idContacto == c.idContacto
+				&& (nombre == c.nombre || (nombre != null && nombre
+						.equals(c.nombre)))
+				&& (nomCorreoElectronico == c.nomCorreoElectronico || (nomCorreoElectronico != null && nomCorreoElectronico
+						.equals(c.nomCorreoElectronico)))
+				&& (notas == c.notas || (notas != null && notas.equals(c.notas)))
+				&& (apellidos == c.apellidos || (apellidos != null && apellidos
+						.equals(c.apellidos)))
+				&& (estimado == c.estimado || (estimado != null && estimado
+						.equals(c.estimado)))
+				&& (direccion == c.direccion || (direccion != null && direccion
+						.equals(c.direccion)))
+				&& (ciudad == c.ciudad || (ciudad != null && ciudad
+						.equals(c.ciudad)))
+				&& (prov == c.prov || (prov != null && prov.equals(c.prov)))
+				&& (codPostal == c.codPostal || (codPostal != null && codPostal
+						.equals(c.codPostal)))
+				&& (region == c.region || (region != null && region
+						.equals(c.region)))
+				&& (pais == c.pais || (pais != null && pais.equals(c.pais)))
+				&& (nombreCompania == c.nombreCompania || (nombreCompania != null && nombreCompania
+						.equals(c.nombreCompania)))
+				&& (cargo == c.cargo || (cargo != null && cargo.equals(c.cargo)))
+				&& (telefonoTrabajo == c.telefonoTrabajo || (telefonoTrabajo != null && telefonoTrabajo
+						.equals(c.telefonoTrabajo)))
+				&& (extensionTrabajo == c.extensionTrabajo || (extensionTrabajo != null && extensionTrabajo
+						.equals(c.extensionTrabajo)))
+				&& (telefonoMovil == c.telefonoMovil || (telefonoMovil != null && telefonoMovil
+						.equals(c.telefonoMovil)))
+				&& (numFax == c.numFax || (numFax != null && numFax
+						.equals(c.numFax)))
+				&& (tipoContacto == c.tipoContacto || (tipoContacto != null && tipoContacto
+						.equals(c.tipoContacto)));
+	}
 
 }

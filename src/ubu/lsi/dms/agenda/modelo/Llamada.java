@@ -1,21 +1,21 @@
 package ubu.lsi.dms.agenda.modelo;
 
 import java.io.Serializable;
+
 /**
  * Clase de entidad con la información de Llamada
+ * 
  * @author Carlos López
  *
  */
 @SuppressWarnings("serial")
-public class Llamada implements Serializable{
-	
-	 private int idLlamada;
-	 private Contacto contacto;
-	 private String fechaLlamada;
-	 private String asunto;
-	 private String notas;
-	 
-	 
+public class Llamada implements Serializable {
+
+	private int idLlamada;
+	private Contacto contacto;
+	private String fechaLlamada;
+	private String asunto;
+	private String notas;
 
 	public Llamada(int idLlamada, Contacto contacto, String fechaLlamada,
 			String asunto, String notas) {
@@ -26,12 +26,12 @@ public class Llamada implements Serializable{
 		this.setAsunto(asunto);
 		this.setNotas(notas);
 	}
-	
+
 	@Override
 	public String toString() {
-		return "Llamada [idLlamada=" + getIdLlamada() + ", contacto=" + getContacto()
-				+ ", fechaLlamada=" + getFechaLlamada() + ", asunto=" + getAsunto()
-				+ ", notas=" + getNotas() + "]";
+		return "Llamada [idLlamada=" + getIdLlamada() + ", contacto="
+				+ getContacto() + ", fechaLlamada=" + getFechaLlamada()
+				+ ", asunto=" + getAsunto() + ", notas=" + getNotas() + "]";
 	}
 
 	public int getIdLlamada() {
@@ -74,9 +74,25 @@ public class Llamada implements Serializable{
 		this.notas = notas;
 	}
 
-	 
-	 
-	   
-	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this) {
+			return true;
+		}
+		if (obj == null || obj.getClass() != this.getClass()) {
+			return false;
+		}
+
+		Llamada ll = (Llamada) obj;
+		return idLlamada == ll.idLlamada
+				&& (contacto == ll.contacto || (contacto != null && contacto
+						.equals(ll.contacto)))
+				&& (fechaLlamada == ll.fechaLlamada || (fechaLlamada != null && fechaLlamada
+						.equals(ll.fechaLlamada)))
+				&& (asunto == ll.fechaLlamada || (fechaLlamada != null && fechaLlamada
+						.equals(ll.fechaLlamada)))
+				&& (notas == ll.notas || (notas != null && notas
+						.equals(ll.notas)));
+	}
 
 }
