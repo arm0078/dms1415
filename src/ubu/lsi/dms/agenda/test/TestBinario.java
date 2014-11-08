@@ -16,7 +16,8 @@ import ubu.lsi.dms.agenda.persistencia.AgendaException;
 import ubu.lsi.dms.agenda.persistencia.FabricaBin;
 import ubu.lsi.dms.agenda.persistencia.FachadaPersistente;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING) // Test ejecutados por orden de nombre
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+// Test ejecutados por orden de nombre
 public class TestBinario {
 
 	private FachadaPersistente fachada;
@@ -25,80 +26,78 @@ public class TestBinario {
 	 * Crear fachada binaria.
 	 */
 	@Before
-	public void setUp() {
+	public void obtenerFabrica() {
 		fachada = FabricaBin.getInstance().crearFachadaPersistente();
 	}
 
 	/**
-	 * Inserta contactos en el archivo de persistencia y después los recupera
-	 * para ver si coinciden.
+	 * Inserta contactos en el archivo de persistencia y después los recupera.
 	 */
 	@Test
 	public void test1insertarContactos() {
-		Contacto contacto1 = new Contacto();
-		contacto1.setIdContacto(0);
-		contacto1.setNombre("Álvaro");
-		contacto1.setApellidos("Ruiz");
-		contacto1.setCiudad("Burgos");
-		Contacto contacto2 = new Contacto();
-		contacto2.setIdContacto(1);
-		contacto2.setNombre("Juan");
-		contacto2.setCiudad("Burgos");
-		contacto2.setApellidos("Ruiz");
 		try {
-			fachada.insertarContacto(contacto1);
-			fachada.insertarContacto(contacto2);
-			Collection<Contacto> contactos = fachada.consultarContactos("Ruiz");
-			Assert.assertEquals(contactos.size(), 2);
-			Assert.assertTrue(contactos.contains(contacto1));
-			Assert.assertTrue(contactos.contains(contacto2));
+			// Insertar 75 conctactos
+			for (int i = 0; i < 75; i++) {
+				Contacto con = new Contacto();
+				if (i < 25)
+					con.setApellidos("Ruiz");
+				else if (i < 50)
+					con.setApellidos("Pérez");
+				else
+					con.setApellidos("Aguirre");
+
+				con.setIdContacto(i);
+				fachada.insertarContacto(con);
+			}
+			Collection<Contacto> contactosRuiz = fachada
+					.consultarContactos("Ruiz");
+			Collection<Contacto> contactosPerez = fachada
+					.consultarContactos("Pérez");
+			Collection<Contacto> contactosAguirre = fachada
+					.consultarContactos("Aguirre");
+			// Tiene que haber 25 conctacto de cada tipo de apellido
+			Assert.assertEquals(contactosRuiz.size(), 25);
+			Assert.assertEquals(contactosPerez.size(), 25);
+			Assert.assertEquals(contactosAguirre.size(), 25);
 		} catch (AgendaException e) {
-			Assert.fail();
+			e.printStackTrace();
 		}
 	}
-	
-	@Test
-	public void test2insertarMasContactos() {
-		Contacto contacto3 = new Contacto();
-		contacto3.setIdContacto(2);
-		contacto3.setNombre("Lucas");
-		contacto3.setApellidos("Ruiz");
-		contacto3.setCiudad("Burgos");
-		Contacto contacto4 = new Contacto();
-		contacto4.setIdContacto(3);
-		contacto4.setNombre("Rodrigo");
-		contacto4.setCiudad("Burgos");
-		contacto4.setApellidos("Pérez");
-		try {
-			fachada.insertarContacto(contacto3);
-			fachada.insertarContacto(contacto4);
-			Collection<Contacto> contactos = fachada.consultarContactos("Ruiz");
-			// Ahora hay tres contactos
-			Assert.assertEquals(contactos.size(), 3);
-			Assert.assertTrue(contactos.contains(contacto3));	
-		} catch (AgendaException e) {
-			Assert.fail();
-		}
-	}
-	
+
+	/**
+	 * Actualiza contactos.
+	 */
 	@Test
 	public void test3actualizarContactos() {
-		Contacto contacto3 = new Contacto();
-		contacto3.setIdContacto(2);
-		contacto3.setNombre("Cristiano");
-		contacto3.setApellidos("Ronaldo");
-		contacto3.setCiudad("Burgos");
 		try {
-			fachada.actualizarContacto(contacto3);
-			Collection<Contacto> contactosRonaldo = fachada.consultarContactos("Ronaldo");
-			Assert.assertEquals(contactosRonaldo.size(), 1);
-			Collection<Contacto> contactosRuiz = fachada.consultarContactos("Ruiz");
-			Assert.assertEquals(contactosRuiz.size(), 2);
+			// Actualizar 25 contactos
+			for (int i = 0; i < 25; i++) {
+				Contacto con = new Contacto();
+				con.setApellidos("Fernández");
+
+				con.setIdContacto(i);
+				fachada.actualizarContacto(con);
+			}
+			Collection<Contacto> contactosRuiz = fachada
+					.consultarContactos("Ruiz");
+			Collection<Contacto> contactosPerez = fachada
+					.consultarContactos("Pérez");
+			Collection<Contacto> contactosAguirre = fachada
+					.consultarContactos("Aguirre");
+			Collection<Contacto> contactosFernandez = fachada
+					.consultarContactos("Fernández");
+			// Tiene que haber 25 conctacto de cada tipo de apellido
+			Assert.assertEquals(contactosFernandez.size(), 25);
+			Assert.assertEquals(contactosPerez.size(), 25);
+			Assert.assertEquals(contactosAguirre.size(), 25);
+			
+			// Ya no hay contactos que se apelliden Ruiz
+			Assert.assertEquals(contactosRuiz.size(), 0);
+			
 		} catch (AgendaException e) {
-			Assert.fail();
+			e.printStackTrace();
 		}
 	}
-	
 
 	/**
 	 * Vaciar el archivo de persistencia.
