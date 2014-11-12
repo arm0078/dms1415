@@ -4,13 +4,11 @@
 package ubu.lsi.dms.agenda.persistencia;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,20 +23,15 @@ import ubu.lsi.dms.agenda.modelo.TipoContacto;
  *
  */
 public class FachadaBD implements FachadaPersistente {
-	
+
 	Connection con1 = null;
-	
+
 	private static FachadaBD instance;
-	
+
 	/**
 	 * Servidor donde está funcionado el SGBD.
 	 */
 	private static final String servidor = "localhost";
-
-	/**
-	 * Puerto de conexión.
-	 */
-	private static final String puerto = "";
 
 	/**
 	 * Usuario de la base de datos.
@@ -60,7 +53,6 @@ public class FachadaBD implements FachadaPersistente {
 	 */
 	private static final String baseDeDatos = "Agenda";
 
-
 	private FachadaBD() {
 		try {
 			con1 = getConnectionWithDriverManager();
@@ -68,7 +60,7 @@ public class FachadaBD implements FachadaPersistente {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static FachadaBD getInstance() {
 		if (instance == null)
 			instance = new FachadaBD();
@@ -81,22 +73,24 @@ public class FachadaBD implements FachadaPersistente {
 		try {
 			stmt = con1.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
-			
-			ResultSet uprs = stmt.executeQuery("SELECT * FROM  tiposdecontacto");
+
+			ResultSet uprs = stmt.executeQuery("SELECT * FROM  LLAMADAS");
 
 			// Posicionamiento en buffer especial para esta operación
 			uprs.moveToInsertRow();
 
 			uprs.updateInt("IdLlamada", llamada.getIdLlamada());
 			uprs.updateInt("IdContacto", llamada.getContacto().getIdContacto());
-			uprs.updateTimestamp("FechaLlamada", Timestamp.valueOf(llamada.getFechaLlamada()));
+			uprs.updateTimestamp("FechaLlamada",
+					Timestamp.valueOf(llamada.getFechaLlamada()));
 			uprs.updateString("Asunto", llamada.getAsunto());
 			uprs.updateString("Notas", llamada.getNotas());
-			
+
 			// Añadir la fila
 			uprs.insertRow();
 			// Posicionamos el cursor
-		    uprs.moveToCurrentRow();
+			uprs.moveToCurrentRow();
+			uprs.close();
 
 		} catch (SQLException e) {
 			throw new AgendaException();
@@ -113,64 +107,48 @@ public class FachadaBD implements FachadaPersistente {
 
 	@Override
 	public void actualizarLlamada(Llamada llamada) throws AgendaException {
-		Statement stmt = null;
-		try {
-			stmt = con1.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			ResultSet resultSetActualizable = stmt.executeQuery("SELECT * FROM LLAMADAS");
-			
-			int idLlamada = resultSetActualizable.getInt("IdLlamada");
-			boolean encontrado = false;
-			
-			while (resultSetActualizable.next() && encontrado == false) {
-				if (llamada.getIdLlamada() == idLlamada) {
-					encontrado = true;
-				}
-			}
-			
-			if(encontrado){
-				//Actualizar los campos de la Llamada
-				resultSetActualizable.updateInt("IdLlamada", llamada.getIdLlamada());
-				resultSetActualizable.updateInt("IdContacto", llamada.getContacto().getIdContacto());
-				resultSetActualizable.updateTimestamp("FechaLlamada", Timestamp.valueOf(llamada.getFechaLlamada()));
-				resultSetActualizable.updateString("Asunto", llamada.getAsunto());
-				resultSetActualizable.updateString("Notas", llamada.getNotas());
-				
-				// Enviamos la actualización a la base de datos
-				 resultSetActualizable.updateRow();
-			} else {
-				//Insertar la Llamada en la Base de Datos
-				insertarLlamada(llamada);
-			}
 
+		try {
+			PreparedStatement stmt = null;
+			stmt = con1
+					.prepareStatement("UPDATE Llamadas "
+							+ "SET IdLLamada=?, IdContacto=?, FechaLlamada=?, Asunto=?, Notas=? WHERE "
+							+ "IdLlamada=?");
+			stmt.setInt(1, llamada.getIdLlamada());
+			stmt.setInt(2, llamada.getContacto().getIdContacto());
+			stmt.setTimestamp(3, Timestamp.valueOf(llamada.getFechaLlamada()));
+			stmt.setString(4, llamada.getAsunto());
+			stmt.setString(5, llamada.getNotas());
+			stmt.setInt(6, llamada.getIdLlamada());
+			stmt.executeUpdate();
 		} catch (SQLException e) {
 			throw new AgendaException();
-		} finally {
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
 		}
+
 	}
 
 	@Override
-	public Collection<Llamada> consultarLlamadas(Contacto contacto) throws AgendaException {
+	public Collection<Llamada> consultarLlamadas(Contacto contacto)
+			throws AgendaException {
 		PreparedStatement stmt = null;
 		String sql = "SELECT * FROM LLAMADAS" + " WHERE idContacto = ?";
 		Collection<Llamada> listaLlamadas = new ArrayList<Llamada>();
-		
+
 		try {
-			stmt = con1.prepareStatement(sql); // Obtenemos el objeto PreparedStatement
-			
-			stmt.setInt(1, contacto.getIdContacto()); // Establecemos el parámetro de la consulta
+			stmt = con1.prepareStatement(sql); // Obtenemos el objeto
+												// PreparedStatement
+
+			stmt.setInt(1, contacto.getIdContacto()); // Establecemos el
+														// parámetro de la
+														// consulta
 			ResultSet rs = stmt.executeQuery(); // Ejecutamos la consulta
-			
+
 			while (rs.next()) {
-				listaLlamadas.add(new Llamada(rs.getInt("IdLlamada"), contacto, rs.getString("FechaLlamada"), rs.getString("Asunto"), rs.getString("Notas")));
+				listaLlamadas.add(new Llamada(rs.getInt("IdLlamada"), contacto,
+						rs.getString("FechaLlamada"), rs.getString("Asunto"),
+						rs.getString("Notas")));
 			}
-			
+
 			rs.close(); // Cierre del result set
 
 		} catch (SQLException e) {
@@ -184,151 +162,129 @@ public class FachadaBD implements FachadaPersistente {
 				}
 			}
 		}
-		
+
 		return listaLlamadas;
 	}
 
 	@Override
 	public void insertarContacto(Contacto contacto) throws AgendaException {
-		Statement stmt = null;
 		try {
-			stmt = con1.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-					ResultSet.CONCUR_UPDATABLE);
-			
-			ResultSet uprs = stmt.executeQuery("SELECT * FROM  tiposdecontacto");
-
-			// Posicionamiento en buffer especial para esta operación
-			uprs.moveToInsertRow();
-
-			uprs.updateInt("IdContacto", contacto.getIdContacto());
-			uprs.updateString("Nombre", contacto.getNombre());
-			uprs.updateString("Apellidos", contacto.getApellidos());
-			uprs.updateString("Estimado", contacto.getEstimado());
-			uprs.updateString("Direccion", contacto.getDireccion());
-			uprs.updateString("Ciudad", contacto.getCiudad());
-			uprs.updateString("Prov", contacto.getProv());
-			uprs.updateString("CodPostal", contacto.getCodPostal());
-			uprs.updateString("Region", contacto.getRegion());
-			uprs.updateString("Pais", contacto.getPais());
-			uprs.updateString("Cargo", contacto.getCargo());
-			uprs.updateString("TelefonoTrabajo", contacto.getTelefonoTrabajo());
-			uprs.updateString("ExtensionTrabajo", contacto.getExtensionTrabajo());
-			uprs.updateString("TelefonoMovil", contacto.getTelefonoMovil());
-			uprs.updateString("NumFax", contacto.getNumFax());
-			uprs.updateString("NomCorreoElectronico", contacto.getNomCorreoElectronico());
-			uprs.updateInt("IdTipoContacto", contacto.getTipoContacto().getIdTipoContacto());
-			uprs.updateString("Notas", contacto.getNotas());
-			
-			
-			// Añadir la fila
-			uprs.insertRow();
-			// Posicionamos el cursor
-		    uprs.moveToCurrentRow();
-
+			PreparedStatement stmt = null;
+			stmt = con1
+					.prepareStatement("INSERT INTO CONTACTOS VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+			stmt.setInt(1, contacto.getIdContacto());
+			stmt.setString(2, contacto.getNombre());
+			stmt.setString(3, contacto.getApellidos());
+			stmt.setString(4, contacto.getEstimado());
+			stmt.setString(5, contacto.getDireccion());
+			stmt.setString(6, contacto.getCiudad());
+			stmt.setString(7, contacto.getProv());
+			stmt.setString(8, contacto.getCodPostal());
+			stmt.setString(9, contacto.getRegion());
+			stmt.setString(10, contacto.getPais());
+			stmt.setString(11, contacto.getNombreCompania());
+			stmt.setString(12, contacto.getCargo());
+			stmt.setString(13, contacto.getTelefonoTrabajo());
+			stmt.setString(14, contacto.getExtensionTrabajo());
+			stmt.setString(15, contacto.getTelefonoMovil());
+			stmt.setString(16, contacto.getNumFax());
+			stmt.setString(17, contacto.getNomCorreoElectronico());
+			stmt.setInt(18, contacto.getTipoContacto().getIdTipoContacto());
+			stmt.setString(19, contacto.getNotas());
+			stmt.executeUpdate();
 		} catch (SQLException e) {
 			throw new AgendaException();
-		} finally {
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
 		}
-		
 	}
 
 	@Override
 	public void actualizarContacto(Contacto contacto) throws AgendaException {
-		Statement stmt = null;
 		try {
-			stmt = con1.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			ResultSet resultSetActualizable = stmt.executeQuery("SELECT * FROM CONTACTOS");
-			
-			int idContacto = resultSetActualizable.getInt("IdContacto");
-			boolean encontrado = false;
-			
-			while (resultSetActualizable.next() && encontrado == false) {
-				if (contacto.getIdContacto() == idContacto) {
-					encontrado = true;
-				}
-			}
-			
-			if(encontrado){
-				//Actualizar los campos de la Llamada
-				resultSetActualizable.updateInt("IdContacto", contacto.getIdContacto());
-				resultSetActualizable.updateString("Nombre", contacto.getNombre());
-				resultSetActualizable.updateString("Apellidos", contacto.getApellidos());
-				resultSetActualizable.updateString("Estimado", contacto.getEstimado());
-				resultSetActualizable.updateString("Direccion", contacto.getDireccion());
-				resultSetActualizable.updateString("Ciudad", contacto.getCiudad());
-				resultSetActualizable.updateString("Prov", contacto.getProv());
-				resultSetActualizable.updateString("CodPostal", contacto.getCodPostal());
-				resultSetActualizable.updateString("Region", contacto.getRegion());
-				resultSetActualizable.updateString("Pais", contacto.getPais());
-				resultSetActualizable.updateString("Cargo", contacto.getCargo());
-				resultSetActualizable.updateString("TelefonoTrabajo", contacto.getTelefonoTrabajo());
-				resultSetActualizable.updateString("ExtensionTrabajo", contacto.getExtensionTrabajo());
-				resultSetActualizable.updateString("TelefonoMovil", contacto.getTelefonoMovil());
-				resultSetActualizable.updateString("NumFax", contacto.getNumFax());
-				resultSetActualizable.updateString("NomCorreoElectronico", contacto.getNomCorreoElectronico());
-				resultSetActualizable.updateInt("IdTipoContacto", contacto.getTipoContacto().getIdTipoContacto());
-				resultSetActualizable.updateString("Notas", contacto.getNotas());
-				
-				// Enviamos la actualización a la base de datos
-				 resultSetActualizable.updateRow();
-			} else {
-				//Insertar la Llamada en la Base de Datos
-				insertarContacto(contacto);
-			}
-
+			PreparedStatement stmt = null;
+			stmt = con1
+					.prepareStatement("UPDATE Contactos "
+							+ "SET IdContacto=?, Nombre=?, Apellidos=?, Estimado=?, Direccion=?, "
+							+ "Ciudad=?, Prov=?, CodPostal=?, Region=?, Pais=?, NombreCompania=?, Cargo=?, "
+							+ "TelefonoTrabajo=?, ExtensionTrabajo=?, TelefonoMovil=?, NumFax=?, "
+							+ "NomCorreoElectronico=?, IdTipoContacto=?, Notas=? WHERE IdContacto=?");
+			stmt.setInt(1, contacto.getIdContacto());
+			stmt.setString(2, contacto.getNombre());
+			stmt.setString(3, contacto.getApellidos());
+			stmt.setString(4, contacto.getEstimado());
+			stmt.setString(5, contacto.getDireccion());
+			stmt.setString(6, contacto.getCiudad());
+			stmt.setString(7, contacto.getProv());
+			stmt.setString(8, contacto.getCodPostal());
+			stmt.setString(9, contacto.getRegion());
+			stmt.setString(10, contacto.getPais());
+			stmt.setString(11, contacto.getNombreCompania());
+			stmt.setString(12, contacto.getCargo());
+			stmt.setString(13, contacto.getTelefonoTrabajo());
+			stmt.setString(14, contacto.getExtensionTrabajo());
+			stmt.setString(15, contacto.getTelefonoMovil());
+			stmt.setString(16, contacto.getNumFax());
+			stmt.setString(17, contacto.getNomCorreoElectronico());
+			stmt.setInt(18, contacto.getTipoContacto().getIdTipoContacto());
+			stmt.setString(19, contacto.getNotas());
+			stmt.setInt(20, contacto.getIdContacto());
+			stmt.executeUpdate();
 		} catch (SQLException e) {
 			throw new AgendaException();
-		} finally {
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
 		}
 	}
 
-
 	@Override
-	public Collection<Contacto> consultarContactos(String apellido) throws AgendaException {
+	public Collection<Contacto> consultarContactos(String apellido)
+			throws AgendaException {
 		PreparedStatement stmtContactos = null;
-		String sqlContactos = "SELECT * FROM CONTACTOS" + " WHERE Apellidos = ?";
+		String sqlContactos = "SELECT * FROM CONTACTOS WHERE Apellidos = ?";
 		Collection<Contacto> listaContactos = new ArrayList<Contacto>();
-		
+
 		try {
-			stmtContactos = con1.prepareStatement(sqlContactos); // Obtenemos el objeto PreparedStatement
-			
-			stmtContactos.setString(1, apellido); // Establecemos el parámetro de la consulta
-			ResultSet rsContactos = stmtContactos.executeQuery(); // Ejecutamos la consulta
-			
+			stmtContactos = con1.prepareStatement(sqlContactos); // Obtenemos el
+																	// objeto
+																	// PreparedStatement
+			stmtContactos.setString(1, apellido); // Establecemos el parámetro
+													// de la consulta
+			ResultSet rsContactos = stmtContactos.executeQuery(); // Ejecutamos
+																	// la
+																	// consulta
+
 			while (rsContactos.next()) {
-				//Hallar y reconstruir el TipoContacto asociado
+				// Hallar y reconstruir el TipoContacto asociado
 				int idTipoContacto = rsContactos.getInt("IdTipoContacto");
-				
-				String sqlTipoContacto = "SELECT * FROM TIPOSDECONTACTO" + " WHERE IdTipoContacto = ?";
-				PreparedStatement stmtTipoContacto = con1.prepareStatement(sqlTipoContacto);
+
+				String sqlTipoContacto = "SELECT * FROM TIPOSDECONTACTO"
+						+ " WHERE IdTipoContacto = ?";
+				PreparedStatement stmtTipoContacto = con1
+						.prepareStatement(sqlTipoContacto);
 				stmtTipoContacto.setInt(1, idTipoContacto);
 				ResultSet rsTipoContacto = stmtTipoContacto.executeQuery();
 				rsTipoContacto.next();
-				TipoContacto tipoContacto = new TipoContacto(idTipoContacto, rsTipoContacto.getString("TipoContacto"));
-				
-				//Añadir el Contacto a la lista
-				listaContactos.add(new Contacto(rsContactos.getInt("IdContacto"), rsContactos.getString("Nombre"), rsContactos.getString("Apellidos"),
-						rsContactos.getString("Estimado"), rsContactos.getString("Direccion"), rsContactos.getString("Ciudad"), rsContactos.getString("Prov"),
-						rsContactos.getString("CodPostal"), rsContactos.getString("Region"), rsContactos.getString("Pais"),
-						rsContactos.getString("NombreCompania"), rsContactos.getString("Cargo"), rsContactos.getString("TelefonoTrabajo"),
-						rsContactos.getString("ExtensionTrabajo"), rsContactos.getString("TelefonoMovil"), rsContactos.getString("NumFax"),
-						rsContactos.getString("NomCorreoElectronico"), rsContactos.getString("Notas"), tipoContacto));
+				TipoContacto tipoContacto = new TipoContacto(idTipoContacto,
+						rsTipoContacto.getString("TipoContacto"));
+
+				// Añadir el Contacto a la lista
+				listaContactos.add(new Contacto(rsContactos
+						.getInt("IdContacto"), rsContactos.getString("Nombre"),
+						rsContactos.getString("Apellidos"), rsContactos
+								.getString("Estimado"), rsContactos
+								.getString("Direccion"), rsContactos
+								.getString("Ciudad"), rsContactos
+								.getString("Prov"), rsContactos
+								.getString("CodPostal"), rsContactos
+								.getString("Region"), rsContactos
+								.getString("Pais"), rsContactos
+								.getString("NombreCompania"), rsContactos
+								.getString("Cargo"), rsContactos
+								.getString("TelefonoTrabajo"), rsContactos
+								.getString("ExtensionTrabajo"), rsContactos
+								.getString("TelefonoMovil"), rsContactos
+								.getString("NumFax"), rsContactos
+								.getString("NomCorreoElectronico"), rsContactos
+								.getString("Notas"), tipoContacto));
 			}
-			
+
 			rsContactos.close(); // Cierre del result set
 
 		} catch (SQLException e) {
@@ -342,29 +298,31 @@ public class FachadaBD implements FachadaPersistente {
 				}
 			}
 		}
-		
+
 		return listaContactos;
 	}
 
 	@Override
-	public void insertarTipoContacto(TipoContacto tipoContacto) throws AgendaException {
+	public void insertarTipoContacto(TipoContacto tipoContacto)
+			throws AgendaException {
 		Statement stmt = null;
 		try {
 			stmt = con1.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
-			
-			ResultSet uprs = stmt.executeQuery("SELECT * FROM  tiposdecontacto");
+
+			ResultSet uprs = stmt
+					.executeQuery("SELECT * FROM  TIPOSDECONTACTO");
 
 			// Posicionamiento en buffer especial para esta operación
 			uprs.moveToInsertRow();
 
 			uprs.updateInt("IdTipoContacto", tipoContacto.getIdTipoContacto());
 			uprs.updateString("TipoContacto", tipoContacto.getTipoContacto());
-			
+
 			// Añadir la fila
 			uprs.insertRow();
 			// Posicionamos el cursor
-		    uprs.moveToCurrentRow();
+			uprs.moveToCurrentRow();
 
 		} catch (SQLException e) {
 			throw new AgendaException();
@@ -380,61 +338,40 @@ public class FachadaBD implements FachadaPersistente {
 	}
 
 	@Override
-	public void actualizarTipoContacto(TipoContacto tipoContacto) throws AgendaException {
-		Statement stmt = null;
+	public void actualizarTipoContacto(TipoContacto tipoContacto)
+			throws AgendaException {
 		try {
-			stmt = con1.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			ResultSet resultSetActualizable = stmt.executeQuery("SELECT * FROM TIPOSDECONTACTO");
-			
-			int idTipoContacto = resultSetActualizable.getInt("IdTipoContacto");
-			boolean encontrado = false;
-			
-			while (resultSetActualizable.next() && encontrado == false) {
-				if (tipoContacto.getIdTipoContacto() == idTipoContacto) {
-					encontrado = true;
-				}
-			}
-			
-			if(encontrado){
-				//Actualizar los campos de la Llamada
-				resultSetActualizable.updateInt("IdTipoContacto", tipoContacto.getIdTipoContacto());
-				resultSetActualizable.updateString("TipoContacto", tipoContacto.getTipoContacto());
-				
-				// Enviamos la actualización a la base de datos
-				 resultSetActualizable.updateRow();
-			} else {
-				//Insertar la Llamada en la Base de Datos
-				insertarTipoContacto(tipoContacto);
-			}
-
+			PreparedStatement stmt = null;
+			stmt = con1
+					.prepareStatement("UPDATE Tiposdecontacto "
+							+ "SET IdTipoContacto=?, TipoContacto=? WHERE IdTipoContacto=?");
+			stmt.setInt(1, tipoContacto.getIdTipoContacto());
+			stmt.setString(2, tipoContacto.getTipoContacto());
+			stmt.setInt(3, tipoContacto.getIdTipoContacto());
+			stmt.executeUpdate();
 		} catch (SQLException e) {
 			throw new AgendaException();
-		} finally {
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
 		}
 	}
 
-
 	@Override
-	public Collection<TipoContacto> consultarTiposContacto() throws AgendaException {
+	public Collection<TipoContacto> consultarTiposContacto()
+			throws AgendaException {
 		PreparedStatement stmt = null;
 		String sql = "SELECT * FROM TIPOSDECONTACTO";
 		Collection<TipoContacto> listaTiposDeContacto = new ArrayList<TipoContacto>();
-		
+
 		try {
-			stmt = con1.prepareStatement(sql); // Obtenemos el objeto PreparedStatement
+			stmt = con1.prepareStatement(sql); // Obtenemos el objeto
+												// PreparedStatement
 			ResultSet rs = stmt.executeQuery(); // Ejecutamos la consulta
-			
+
 			while (rs.next()) {
-				listaTiposDeContacto.add(new TipoContacto(rs.getInt("IdTipoContacto"), rs.getString("TipoContacto")));
+				listaTiposDeContacto
+						.add(new TipoContacto(rs.getInt("IdTipoContacto"), rs
+								.getString("TipoContacto")));
 			}
-			
+
 			rs.close(); // Cierre del result set
 
 		} catch (SQLException e) {
@@ -448,12 +385,9 @@ public class FachadaBD implements FachadaPersistente {
 				}
 			}
 		}
-		
+
 		return listaTiposDeContacto;
 	}
-	
-
-	
 
 	/**
 	 * Obtiene una conexión a la base de datos utilizando un DriverManager.

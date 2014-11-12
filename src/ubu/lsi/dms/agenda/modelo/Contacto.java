@@ -38,7 +38,7 @@ public class Contacto implements Serializable {
 			String extensionTrabajo, String telefonoMovil, String numFax,
 			String nomCorreoElectronico, String notas, TipoContacto tipoContacto) {
 		super();
-		this.setIdContacto(idContacto);
+		this.idContacto =idContacto;
 		this.nombre = nombre;
 		this.apellidos = apellidos;
 		this.estimado = estimado;
@@ -64,7 +64,7 @@ public class Contacto implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Contacto [idContacto=" + getIdContacto() + ", nombre=" + nombre
+		return "Contacto [idContacto=" + idContacto + ", nombre=" + nombre
 				+ ", apellidos=" + apellidos + ", estimado=" + estimado
 				+ ", direccion=" + direccion + ", ciudad=" + ciudad + ", prov="
 				+ prov + ", codPostal=" + codPostal + ", region=" + region
