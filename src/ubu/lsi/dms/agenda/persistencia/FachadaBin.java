@@ -96,6 +96,12 @@ public class FachadaBin implements FachadaPersistente {
 		return instance;
 	}
 
+	/**
+	 * Inserta una nueva llamada en el fichero binario
+	 *
+	 * @param llamada
+	 *            llamada a insertar
+	 */
 	@Override
 	public void insertarLlamada(Llamada llamada) {
 		llamadas.add(llamada);
@@ -108,6 +114,12 @@ public class FachadaBin implements FachadaPersistente {
 		}
 	}
 
+	/**
+	 * Actualiza una llamada en el fichero binario dada su identificador
+	 *
+	 * @param llamada
+	 *            llamada a actualizar
+	 */
 	@Override
 	public void actualizarLlamada(Llamada llamada) {
 		Iterator<Llamada> iterator = llamadas.iterator();
@@ -142,6 +154,12 @@ public class FachadaBin implements FachadaPersistente {
 		return false;
 	}
 
+	/**
+	 * Inserta un nuevo contacto en el fichero binario
+	 *
+	 * @param contacto
+	 *            contacto a insertar
+	 */
 	@Override
 	public void insertarContacto(Contacto contacto) {
 		contactos.add(contacto);
@@ -155,6 +173,12 @@ public class FachadaBin implements FachadaPersistente {
 
 	}
 
+	/**
+	 * Actualiza un contacto en el fichero binario dado su identificador
+	 * 
+	 * @param contacto
+	 *            contacto a actualizar
+	 */
 	@Override
 	public void actualizarContacto(Contacto contacto) {
 		Iterator<Contacto> iterator = contactos.iterator();
@@ -175,6 +199,12 @@ public class FachadaBin implements FachadaPersistente {
 		}
 	}
 
+	/**
+	 * Inserta un nuevo tipo de contacto en el fichero binario
+	 *
+	 * @param tipoContacto
+	 *            tipo de contacto a insertar
+	 */
 	@Override
 	public void insertarTipoContacto(TipoContacto tipoContacto) {
 		tipos.add(tipoContacto);
@@ -187,6 +217,13 @@ public class FachadaBin implements FachadaPersistente {
 		}
 	}
 
+	/**
+	 * Actualiza un tipo de contacto en el fichero binario dado su
+	 * identificador
+	 *
+	 * @param tipoContacto
+	 *            tipo de contacto a actualizar
+	 */
 	@Override
 	public void actualizarTipoContacto(TipoContacto tipoContacto) {
 		Iterator<TipoContacto> iterator = tipos.iterator();
@@ -207,11 +244,25 @@ public class FachadaBin implements FachadaPersistente {
 		}
 	}
 
+	/**
+	 * Devuelve una colección de tipos de contactos que pertenecen al 
+	 * fichero binario
+	 *
+	 * @return tipos de contactos que están en el sistema de persistencia
+	 */
 	@Override
 	public Collection<TipoContacto> consultarTiposContacto() {
 		return tipos;
 	}
 
+	/**
+	 * Devuelve una colección de llamadas del fichero binario
+	 * que tienen asocidadas el contacto especificado
+	 *
+	 * @param contacto
+	 *            contacto para el que se quieren ver sus llamadas
+	 * @return colección de llamadas asociadas al contacto
+	 */
 	@Override
 	public Collection<Llamada> consultarLlamadas(Contacto contacto) {
 		Collection<Llamada> llamadasContacto = new ArrayList<>();
@@ -223,6 +274,14 @@ public class FachadaBin implements FachadaPersistente {
 		return llamadasContacto;
 	}
 
+	/**
+	 * Devuelve una colección de contactos pertenecientes al fichero binario
+	 * para los cuales su apellido es el mismo que el proporcionado
+	 *
+	 * @param apellido
+	 *            apellido de los contactos que queremos buscar
+	 * @return colección de contactos con el mismo apellido que el proporcionado
+	 */
 	@Override
 	public Collection<Contacto> consultarContactos(String apellidos) {
 		Collection<Contacto> contactosApellido = new ArrayList<>();

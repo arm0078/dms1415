@@ -85,6 +85,12 @@ public class FachadaBD implements FachadaPersistente {
 		return instance;
 	}
 
+	/**
+	 * Inserta una nueva llamada en la base de datos
+	 *
+	 * @param llamada
+	 *            llamada a insertar
+	 */
 	@Override
 	public void insertarLlamada(Llamada llamada) {
 		Statement stmt = null;
@@ -124,6 +130,12 @@ public class FachadaBD implements FachadaPersistente {
 		}
 	}
 
+	/**
+	 * Actualiza una llamada de la base de datos dada su identificador
+	 *
+	 * @param llamada
+	 *            llamada a actualizar
+	 */
 	@Override
 	public void actualizarLlamada(Llamada llamada) {
 
@@ -146,6 +158,15 @@ public class FachadaBD implements FachadaPersistente {
 
 	}
 
+	/**
+	/**
+	 * Devuelve una colección de llamadas de la base de datos
+	 * que tienen asocidadas el contacto especificado
+	 *
+	 * @param contacto
+	 *            contacto para el que se quieren ver sus llamadas
+	 * @return colección de llamadas asociadas al contacto
+	 */
 	@Override
 	public Collection<Llamada> consultarLlamadas(Contacto contacto) {
 		PreparedStatement stmt = null;
@@ -183,7 +204,13 @@ public class FachadaBD implements FachadaPersistente {
 
 		return listaLlamadas;
 	}
-
+	
+	/**
+	 * Inserta un nuevo contacto en la base de datos
+	 *
+	 * @param contacto
+	 *            contacto a insertar
+	 */
 	@Override
 	public void insertarContacto(Contacto contacto) {
 		try {
@@ -215,6 +242,13 @@ public class FachadaBD implements FachadaPersistente {
 		}
 	}
 
+
+	/**
+	 * Actualiza un contacto de la base de datos dado su identificador
+	 * 
+	 * @param contacto
+	 *            contacto a actualizar
+	 */
 	@Override
 	public void actualizarContacto(Contacto contacto) {
 		try {
@@ -251,6 +285,14 @@ public class FachadaBD implements FachadaPersistente {
 		}
 	}
 
+	/**
+	 * Devuelve una colección de contactos pertenecientes a la base de 
+	 * datos para los cuales su apellido es el mismo que el proporcionado
+	 *
+	 * @param apellido
+	 *            apellido de los contactos que queremos buscar
+	 * @return colección de contactos con el mismo apellido que el proporcionado
+	 */
 	@Override
 	public Collection<Contacto> consultarContactos(String apellido) {
 		PreparedStatement stmtContactos = null;
@@ -319,6 +361,13 @@ public class FachadaBD implements FachadaPersistente {
 		return listaContactos;
 	}
 
+	/**
+	 * Inserta un nuevo tipo de contacto en la base de datos
+	 * dado su identificador
+	 * 
+	 * @param tipoContacto
+	 *            tipo de contacto a insertar
+	 */
 	@Override
 	public void insertarTipoContacto(TipoContacto tipoContacto) {
 		Statement stmt = null;
@@ -353,6 +402,13 @@ public class FachadaBD implements FachadaPersistente {
 		}
 	}
 
+	/**
+	 * Actualiza un tipo de contacto de la base de dataos
+	 * identificador
+	 *
+	 * @param tipoContacto
+	 *            tipo de contacto a actualizar
+	 */
 	@Override
 	public void actualizarTipoContacto(TipoContacto tipoContacto) {
 		try {
@@ -369,6 +425,12 @@ public class FachadaBD implements FachadaPersistente {
 		}
 	}
 
+	/**
+	 * Devuelve una colección de tipos de contactos que pertenecen a
+	 * la base de datos
+	 *
+	 * @return tipos de contactos que están en el sistema de persistencia
+	 */
 	@Override
 	public Collection<TipoContacto> consultarTiposContacto() {
 		PreparedStatement stmt = null;

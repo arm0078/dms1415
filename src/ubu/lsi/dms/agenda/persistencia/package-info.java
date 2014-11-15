@@ -5,9 +5,7 @@
  * Permite configurar al cliente con uno de los dos subsistemas sin que tenga dependencias 
  * sobre las implementaciones concretas. 
  * El cliente usa una propiedad de la aplicación para seleccionar la implementación concreta.
- */
-/**
- * @author Carlos López
  *
+ * @author Carlos López
  */
 package ubu.lsi.dms.agenda.persistencia;

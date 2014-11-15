@@ -7,7 +7,8 @@ import ubu.lsi.dms.agenda.modelo.Llamada;
 import ubu.lsi.dms.agenda.modelo.TipoContacto;
 
 /**
- * Fachada para persistencia de datos.
+ * Interfaz que especifica las funciones que debe soportar el sistema de
+ * persistencia de la agenda
  * 
  * Patrón de diseño: Fábrica Abstracta. Este participante es el Producto
  * Abstracto.
@@ -22,75 +23,79 @@ import ubu.lsi.dms.agenda.modelo.TipoContacto;
 public interface FachadaPersistente {
 
 	/**
-	 * Hace una llamada persistente.
-	 * 
+	 * Inserta una nueva llamada en el sistema de persistencia
+	 *
 	 * @param llamada
-	 *            llamada que se quiere hacer persistente
+	 *            llamada a insertar
 	 */
 	void insertarLlamada(Llamada llamada);
 
 	/**
-	 * Actualiza una llamada.
-	 * 
+	 * Actualiza una llamada del sistema de persistencia dada su identificador
+	 *
 	 * @param llamada
-	 *            llamada que se quiere actualizar
+	 *            llamada a actualizar
 	 */
 	void actualizarLlamada(Llamada llamada);
 
 	/**
-	 * Consulta las llamadas filtradas por contacto.
-	 * 
+	 * Devuelve una colección de llamadas del sistema de persistencia
+	 * que tienen asocidadas el contacto especificado
+	 *
 	 * @param contacto
-	 *            contacto del que se quieren consultar las llamadas
-	 * @return colección de llamadas del contacto
+	 *            contacto para el que se quieren ver sus llamadas
+	 * @return colección de llamadas asociadas al contacto
 	 */
 	Collection<Llamada> consultarLlamadas(Contacto contacto);
 
 	/**
-	 * Hace un contacto persistente.
-	 * 
+	 * Inserta un nuevo contacto en el sistema de persistencia
+	 *
 	 * @param contacto
-	 *            contacto que se quiere hacer persistente
+	 *            contacto a insertar
 	 */
 	void insertarContacto(Contacto contacto);
 
 	/**
-	 * Actualiza un contacto.
+	 * Actualiza un contacto del sistema de persistencia dado su identificador
 	 * 
 	 * @param contacto
-	 *            contacto que se quiere actualizar
+	 *            contacto a actualizar
 	 */
 	void actualizarContacto(Contacto contacto);
 
 	/**
-	 * Consulta los contactos filtrados por apellido.
-	 * 
+	 * Devuelve una colección de contactos pertenecientes al sistema de
+	 * persistencia para los cuales su apellido es el mismo que el proporcionado
+	 *
 	 * @param apellido
-	 *            apellido de los contactos que se quiere obtener
-	 * @return colección de contactos filtrados por apellido
+	 *            apellido de los contactos que queremos buscar
+	 * @return colección de contactos con el mismo apellido que el proporcionado
 	 */
 	Collection<Contacto> consultarContactos(String apellido);
 
 	/**
-	 * Hace un tipo de contacto persistente.
-	 * 
+	 * Inserta un nuevo tipo de contacto en el sistema de persistencia
+	 *
 	 * @param tipoContacto
-	 *            tipo de contacto que se quiere hacer persistente
+	 *            tipo de contacto a insertar
 	 */
 	void insertarTipoContacto(TipoContacto tipoContacto);
 
 	/**
-	 * Actualiza un tipo de contacto.
-	 * 
+	 * Actualiza un tipo de contacto del sistema de persistencia dado su
+	 * identificador
+	 *
 	 * @param tipoContacto
-	 *            tipo de contactoque se quiere actualizar
+	 *            tipo de contacto a actualizar
 	 */
 	void actualizarTipoContacto(TipoContacto tipoContacto);
 
 	/**
-	 * Consulta los contactos.
+	 * Devuelve una colección de tipos de contactos que pertenecen al sistema de
+	 * persistenca
 	 *
-	 * @return colección de tipos de contacto
+	 * @return tipos de contactos que están en el sistema de persistencia
 	 */
 	Collection<TipoContacto> consultarTiposContacto();
 }
