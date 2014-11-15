@@ -30,7 +30,7 @@ public class TestBD {
 	}
 
 	/**
-	 *  Test para comprobar el funcionamiento del manejo de tipos de contacto
+	 * Test para comprobar el funcionamiento del manejo de tipos de contacto
 	 */
 	@Test
 	public void test1TipoContactos() {
@@ -60,7 +60,7 @@ public class TestBD {
 	}
 
 	/**
-	 *  Test para comprobar el funcionamiento del manejo de contactos
+	 * Test para comprobar el funcionamiento del manejo de contactos
 	 */
 	@Test
 	public void test2Contactos() {
@@ -118,7 +118,7 @@ public class TestBD {
 	}
 
 	/**
-	 *  Test para probar con los datos cargados en scriptcargadatos
+	 * Test para probar con los datos cargados en scriptcargadatos
 	 */
 	@Ignore
 	@Test
@@ -140,7 +140,7 @@ public class TestBD {
 	}
 
 	/**
-	 *  Test reutilizado del test binario
+	 * Test reutilizado del test binario
 	 */
 	@Test
 	public void test5insertarContactos() {
@@ -174,7 +174,7 @@ public class TestBD {
 	}
 
 	/**
-	 *  Test reutilizado del test binario
+	 * Test reutilizado del test binario
 	 */
 	@Test
 	public void test6actualizarContactos() {

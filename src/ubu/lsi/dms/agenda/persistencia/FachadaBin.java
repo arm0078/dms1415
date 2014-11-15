@@ -218,8 +218,7 @@ public class FachadaBin implements FachadaPersistente {
 	}
 
 	/**
-	 * Actualiza un tipo de contacto en el fichero binario dado su
-	 * identificador
+	 * Actualiza un tipo de contacto en el fichero binario dado su identificador
 	 *
 	 * @param tipoContacto
 	 *            tipo de contacto a actualizar
@@ -245,8 +244,8 @@ public class FachadaBin implements FachadaPersistente {
 	}
 
 	/**
-	 * Devuelve una colección de tipos de contactos que pertenecen al 
-	 * fichero binario
+	 * Devuelve una colección de tipos de contactos que pertenecen al fichero
+	 * binario
 	 *
 	 * @return tipos de contactos que están en el sistema de persistencia
 	 */
@@ -256,8 +255,8 @@ public class FachadaBin implements FachadaPersistente {
 	}
 
 	/**
-	 * Devuelve una colección de llamadas del fichero binario
-	 * que tienen asocidadas el contacto especificado
+	 * Devuelve una colección de llamadas del fichero binario que tienen
+	 * asocidadas el contacto especificado
 	 *
 	 * @param contacto
 	 *            contacto para el que se quieren ver sus llamadas

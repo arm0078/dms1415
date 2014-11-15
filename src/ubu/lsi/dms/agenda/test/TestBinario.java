@@ -12,6 +12,8 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import ubu.lsi.dms.agenda.modelo.Contacto;
+import ubu.lsi.dms.agenda.modelo.Llamada;
+import ubu.lsi.dms.agenda.modelo.TipoContacto;
 import ubu.lsi.dms.agenda.persistencia.FabricaBin;
 import ubu.lsi.dms.agenda.persistencia.FachadaPersistente;
 
@@ -33,7 +35,7 @@ public class TestBinario {
 	 * Inserta objetos en los archivos persistencia y después los recupera.
 	 */
 	@Test
-	public void test1insertarContactos() {
+	public void test1InsertarContactos() {
 		// Insertar 75 contactos
 		for (int i = 0; i < 75; i++) {
 			Contacto con = new Contacto();
@@ -62,7 +64,7 @@ public class TestBinario {
 	 * Actualiza contactos.
 	 */
 	@Test
-	public void test3actualizarContactos() {
+	public void test2ActualizarContactos() {
 
 		// Actualizar 25 contactos
 		for (int i = 0; i < 25; i++) {
@@ -89,10 +91,60 @@ public class TestBinario {
 	}
 
 	/**
+	 * Test que usa los tres modelos.
+	 */
+	@Test
+	public void test3Modelos() {
+		vaciarArchivoPesistencia();
+		// Crear tipos
+		TipoContacto tipo1 = new TipoContacto(1, "Jefe");
+		tipo1.setIdTipoContacto(1);
+		TipoContacto tipo2 = new TipoContacto(1, "Amigo");
+		tipo1.setIdTipoContacto(2);
+		fachada.insertarTipoContacto(tipo1);
+		fachada.insertarTipoContacto(tipo2);
+		// Crear Contactos
+		Contacto con1 = new Contacto();
+		con1.setIdContacto(1);
+		con1.setNombre("Álvaro");
+		con1.setApellidos("Ruiz");
+		con1.setTipoContacto(tipo1);
+		Contacto con2 = new Contacto();
+		con2.setIdContacto(2);
+		con2.setNombre("Pepe");
+		con2.setApellidos("Shánchez");
+		con2.setTipoContacto(tipo2);
+		fachada.insertarContacto(con1);
+		fachada.insertarContacto(con2);
+		// Crear Llamadas
+		Llamada llam1 = new Llamada();
+		llam1.setIdLlamada(1);
+		llam1.setContacto(con1);
+		Llamada llam2 = new Llamada();
+		llam2.setIdLlamada(2);
+		llam2.setContacto(con1);
+		Llamada llam3 = new Llamada();
+		llam3.setIdLlamada(3);
+		llam3.setContacto(con2);
+		fachada.insertarLlamada(llam1);
+		fachada.insertarLlamada(llam2);
+		fachada.insertarLlamada(llam3);
+
+		Collection<TipoContacto> tipos = fachada.consultarTiposContacto();
+		Collection<Contacto> contactos = fachada.consultarContactos("Ruiz");
+		Collection<Llamada> llamadasRuiz = fachada.consultarLlamadas(con1);
+		Collection<Llamada> llamadasSanchez = fachada.consultarLlamadas(con2);
+		Assert.assertEquals(tipos.size(), 2);
+		Assert.assertEquals(contactos.size(), 1);
+		Assert.assertEquals(llamadasRuiz.size(), 2);
+		Assert.assertEquals(llamadasSanchez.size(), 1);
+	}
+
+	/**
 	 * Vaciar los archivos de persistencia.
 	 */
 	@After
-	public void vaciarAchivoPesistencia() {
+	public void vaciarArchivoPesistencia() {
 		FileOutputStream writer;
 		try {
 			writer = new FileOutputStream("res\\contactos.dat");

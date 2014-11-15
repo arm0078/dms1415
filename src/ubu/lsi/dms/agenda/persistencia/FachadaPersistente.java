@@ -39,8 +39,8 @@ public interface FachadaPersistente {
 	void actualizarLlamada(Llamada llamada);
 
 	/**
-	 * Devuelve una colección de llamadas del sistema de persistencia
-	 * que tienen asocidadas el contacto especificado
+	 * Devuelve una colección de llamadas del sistema de persistencia que tienen
+	 * asocidadas el contacto especificado
 	 *
 	 * @param contacto
 	 *            contacto para el que se quieren ver sus llamadas

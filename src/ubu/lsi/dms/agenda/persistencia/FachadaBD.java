@@ -159,9 +159,8 @@ public class FachadaBD implements FachadaPersistente {
 	}
 
 	/**
-	/**
-	 * Devuelve una colección de llamadas de la base de datos
-	 * que tienen asocidadas el contacto especificado
+	 * /** Devuelve una colección de llamadas de la base de datos que tienen
+	 * asocidadas el contacto especificado
 	 *
 	 * @param contacto
 	 *            contacto para el que se quieren ver sus llamadas
@@ -204,7 +203,7 @@ public class FachadaBD implements FachadaPersistente {
 
 		return listaLlamadas;
 	}
-	
+
 	/**
 	 * Inserta un nuevo contacto en la base de datos
 	 *
@@ -241,7 +240,6 @@ public class FachadaBD implements FachadaPersistente {
 			e.printStackTrace();
 		}
 	}
-
 
 	/**
 	 * Actualiza un contacto de la base de datos dado su identificador
@@ -286,8 +284,8 @@ public class FachadaBD implements FachadaPersistente {
 	}
 
 	/**
-	 * Devuelve una colección de contactos pertenecientes a la base de 
-	 * datos para los cuales su apellido es el mismo que el proporcionado
+	 * Devuelve una colección de contactos pertenecientes a la base de datos
+	 * para los cuales su apellido es el mismo que el proporcionado
 	 *
 	 * @param apellido
 	 *            apellido de los contactos que queremos buscar
@@ -362,8 +360,8 @@ public class FachadaBD implements FachadaPersistente {
 	}
 
 	/**
-	 * Inserta un nuevo tipo de contacto en la base de datos
-	 * dado su identificador
+	 * Inserta un nuevo tipo de contacto en la base de datos dado su
+	 * identificador
 	 * 
 	 * @param tipoContacto
 	 *            tipo de contacto a insertar
@@ -403,8 +401,7 @@ public class FachadaBD implements FachadaPersistente {
 	}
 
 	/**
-	 * Actualiza un tipo de contacto de la base de dataos
-	 * identificador
+	 * Actualiza un tipo de contacto de la base de dataos identificador
 	 *
 	 * @param tipoContacto
 	 *            tipo de contacto a actualizar
@@ -426,8 +423,8 @@ public class FachadaBD implements FachadaPersistente {
 	}
 
 	/**
-	 * Devuelve una colección de tipos de contactos que pertenecen a
-	 * la base de datos
+	 * Devuelve una colección de tipos de contactos que pertenecen a la base de
+	 * datos
 	 *
 	 * @return tipos de contactos que están en el sistema de persistencia
 	 */
