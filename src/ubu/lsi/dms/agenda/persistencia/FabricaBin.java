@@ -1,19 +1,31 @@
-/**
- * 
- */
 package ubu.lsi.dms.agenda.persistencia;
 
 /**
- * @author alumno
+ * Fábrica de fachadas de persistencia de datos en ficheros binarios.
+ * 
+ * Patrón de diseño: Fábrica Abstracta. Este participante es la Fábrica
+ * Concreta.
+ * 
+ * Patrón de diseño: Singleton.
+ * 
+ * @author Álvaro Ruiz
  *
  */
 public class FabricaBin implements FabricaPersistencia {
 
+	/**
+	 * Instancia única de la clase.
+	 */
 	private static FabricaBin instance;
-	
+
 	private FabricaBin() {
 	}
 
+	/**
+	 * Obtiene la instancia de la clase.
+	 * 
+	 * @return la instancia de la clase
+	 */
 	public static FabricaBin getInstance() {
 		if (instance == null)
 			instance = new FabricaBin();

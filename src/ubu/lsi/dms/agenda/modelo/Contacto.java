@@ -38,7 +38,7 @@ public class Contacto implements Serializable {
 			String extensionTrabajo, String telefonoMovil, String numFax,
 			String nomCorreoElectronico, String notas, TipoContacto tipoContacto) {
 		super();
-		this.idContacto =idContacto;
+		this.idContacto = idContacto;
 		this.nombre = nombre;
 		this.apellidos = apellidos;
 		this.estimado = estimado;

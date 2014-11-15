@@ -13,9 +13,9 @@ public class TipoContacto implements Serializable {
 	private int idTipoContacto;
 	private String TipoContacto;
 
-	public TipoContacto(){
+	public TipoContacto() {
 	}
-	
+
 	public TipoContacto(int idTipoContacto, String tipoContacto) {
 		super();
 		this.setIdTipoContacto(idTipoContacto);

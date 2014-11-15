@@ -1,6 +1,3 @@
-/**
- * @author Álvaro Ruiz
- */
 package ubu.lsi.dms.agenda.persistencia;
 
 import java.io.File;
@@ -18,15 +15,38 @@ import ubu.lsi.dms.agenda.modelo.Llamada;
 import ubu.lsi.dms.agenda.modelo.TipoContacto;
 
 /**
- * @author
+ * Fachada para persistencia de datos en ficheros binarios.
+ * 
+ * Patrón de diseño: Fábrica Abstracta. Este participante es el Producto
+ * Concreto.
+ * 
+ * Patrón de diseño: Fachada.
+ * 
+ * Patrón de diseño: Singleton.
+ * 
+ * @author Álvaro Ruiz
  *
  */
 public class FachadaBin implements FachadaPersistente {
 
+	/**
+	 * Instancia única de la clase.
+	 */
 	private static FachadaBin instance;
 
+	/**
+	 * Colección de contactos.
+	 */
 	private Collection<Contacto> contactos;
+
+	/**
+	 * Colección de tipos de contacto.
+	 */
 	private Collection<TipoContacto> tipos;
+
+	/**
+	 * Colección de llamadas.
+	 */
 	private Collection<Llamada> llamadas;
 
 	@SuppressWarnings("unchecked")
@@ -65,6 +85,11 @@ public class FachadaBin implements FachadaPersistente {
 		}
 	}
 
+	/**
+	 * Obtiene la instancia de la clase.
+	 * 
+	 * @return la instancia de la clase
+	 */
 	public static FachadaBin getInstance() {
 		if (instance == null)
 			instance = new FachadaBin();
@@ -103,6 +128,13 @@ public class FachadaBin implements FachadaPersistente {
 		}
 	}
 
+	/**
+	 * Consulta si un fichero está vacío.
+	 * 
+	 * @param nameFile
+	 *            nombre del fichero
+	 * @return true si el fichero está vacío, false en caso contrario.
+	 */
 	private boolean isEmptyFile(String nameFile) {
 		File file = new File(nameFile);
 		if (file.length() == 0)

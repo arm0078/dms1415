@@ -1,6 +1,3 @@
-/**
- * 
- */
 package ubu.lsi.dms.agenda.persistencia;
 
 import java.sql.Connection;
@@ -19,13 +16,29 @@ import ubu.lsi.dms.agenda.modelo.Llamada;
 import ubu.lsi.dms.agenda.modelo.TipoContacto;
 
 /**
- * @author alumno
+ * Fachada para persistencia de datos en base de datos.
+ * 
+ * Patrón de diseño: Fábrica Abstracta. Este participante es el Producto
+ * Concreto.
+ * 
+ * Patrón de diseño: Fachada.
+ * 
+ * Patrón de diseño: Singleton.
+ * 
+ * @author Jorge Alonso
+ * @author Javier de la Fuente
  *
  */
 public class FachadaBD implements FachadaPersistente {
 
+	/**
+	 * Conexión a la base de datos.
+	 */
 	Connection con1 = null;
 
+	/**
+	 * Instancia única de la clase.
+	 */
 	private static FachadaBD instance;
 
 	/**
@@ -61,6 +74,11 @@ public class FachadaBD implements FachadaPersistente {
 		}
 	}
 
+	/**
+	 * Obtiene la instancia de la clase.
+	 * 
+	 * @return la instancia de la clase
+	 */
 	public static FachadaBD getInstance() {
 		if (instance == null)
 			instance = new FachadaBD();
@@ -68,7 +86,7 @@ public class FachadaBD implements FachadaPersistente {
 	}
 
 	@Override
-	public void insertarLlamada(Llamada llamada) throws AgendaException {
+	public void insertarLlamada(Llamada llamada) {
 		Statement stmt = null;
 		try {
 			stmt = con1.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -93,7 +111,8 @@ public class FachadaBD implements FachadaPersistente {
 			uprs.close();
 
 		} catch (SQLException e) {
-			throw new AgendaException();
+			e.printStackTrace();
+			;
 		} finally {
 			if (stmt != null) {
 				try {
@@ -106,7 +125,7 @@ public class FachadaBD implements FachadaPersistente {
 	}
 
 	@Override
-	public void actualizarLlamada(Llamada llamada) throws AgendaException {
+	public void actualizarLlamada(Llamada llamada) {
 
 		try {
 			PreparedStatement stmt = null;
@@ -122,14 +141,13 @@ public class FachadaBD implements FachadaPersistente {
 			stmt.setInt(6, llamada.getIdLlamada());
 			stmt.executeUpdate();
 		} catch (SQLException e) {
-			throw new AgendaException();
+			e.printStackTrace();
 		}
 
 	}
 
 	@Override
-	public Collection<Llamada> consultarLlamadas(Contacto contacto)
-			throws AgendaException {
+	public Collection<Llamada> consultarLlamadas(Contacto contacto) {
 		PreparedStatement stmt = null;
 		String sql = "SELECT * FROM LLAMADAS" + " WHERE idContacto = ?";
 		Collection<Llamada> listaLlamadas = new ArrayList<Llamada>();
@@ -152,7 +170,7 @@ public class FachadaBD implements FachadaPersistente {
 			rs.close(); // Cierre del result set
 
 		} catch (SQLException e) {
-			throw new AgendaException();
+			e.printStackTrace();
 		} finally {
 			if (stmt != null) {
 				try {
@@ -167,7 +185,7 @@ public class FachadaBD implements FachadaPersistente {
 	}
 
 	@Override
-	public void insertarContacto(Contacto contacto) throws AgendaException {
+	public void insertarContacto(Contacto contacto) {
 		try {
 			PreparedStatement stmt = null;
 			stmt = con1
@@ -193,12 +211,12 @@ public class FachadaBD implements FachadaPersistente {
 			stmt.setString(19, contacto.getNotas());
 			stmt.executeUpdate();
 		} catch (SQLException e) {
-			throw new AgendaException();
+			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public void actualizarContacto(Contacto contacto) throws AgendaException {
+	public void actualizarContacto(Contacto contacto) {
 		try {
 			PreparedStatement stmt = null;
 			stmt = con1
@@ -229,13 +247,12 @@ public class FachadaBD implements FachadaPersistente {
 			stmt.setInt(20, contacto.getIdContacto());
 			stmt.executeUpdate();
 		} catch (SQLException e) {
-			throw new AgendaException();
+			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public Collection<Contacto> consultarContactos(String apellido)
-			throws AgendaException {
+	public Collection<Contacto> consultarContactos(String apellido) {
 		PreparedStatement stmtContactos = null;
 		String sqlContactos = "SELECT * FROM CONTACTOS WHERE Apellidos = ?";
 		Collection<Contacto> listaContactos = new ArrayList<Contacto>();
@@ -288,7 +305,7 @@ public class FachadaBD implements FachadaPersistente {
 			rsContactos.close(); // Cierre del result set
 
 		} catch (SQLException e) {
-			throw new AgendaException();
+			e.printStackTrace();
 		} finally {
 			if (stmtContactos != null) {
 				try {
@@ -303,8 +320,7 @@ public class FachadaBD implements FachadaPersistente {
 	}
 
 	@Override
-	public void insertarTipoContacto(TipoContacto tipoContacto)
-			throws AgendaException {
+	public void insertarTipoContacto(TipoContacto tipoContacto) {
 		Statement stmt = null;
 		try {
 			stmt = con1.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -325,7 +341,7 @@ public class FachadaBD implements FachadaPersistente {
 			uprs.moveToCurrentRow();
 
 		} catch (SQLException e) {
-			throw new AgendaException();
+			e.printStackTrace();
 		} finally {
 			if (stmt != null) {
 				try {
@@ -338,8 +354,7 @@ public class FachadaBD implements FachadaPersistente {
 	}
 
 	@Override
-	public void actualizarTipoContacto(TipoContacto tipoContacto)
-			throws AgendaException {
+	public void actualizarTipoContacto(TipoContacto tipoContacto) {
 		try {
 			PreparedStatement stmt = null;
 			stmt = con1
@@ -350,13 +365,12 @@ public class FachadaBD implements FachadaPersistente {
 			stmt.setInt(3, tipoContacto.getIdTipoContacto());
 			stmt.executeUpdate();
 		} catch (SQLException e) {
-			throw new AgendaException();
+			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public Collection<TipoContacto> consultarTiposContacto()
-			throws AgendaException {
+	public Collection<TipoContacto> consultarTiposContacto() {
 		PreparedStatement stmt = null;
 		String sql = "SELECT * FROM TIPOSDECONTACTO";
 		Collection<TipoContacto> listaTiposDeContacto = new ArrayList<TipoContacto>();
@@ -375,7 +389,7 @@ public class FachadaBD implements FachadaPersistente {
 			rs.close(); // Cierre del result set
 
 		} catch (SQLException e) {
-			throw new AgendaException();
+			e.printStackTrace();
 		} finally {
 			if (stmt != null) {
 				try {
